@@ -9,7 +9,7 @@ class PostService {
     }
     async findAllPosts() {
 
-        const allPosts = await PostModel.find().populate("likes", "comments")
+        const allPosts = await PostModel.find().populate("likes").populate( "comments").populate("userId")
         return allPosts
     }
 
@@ -17,10 +17,21 @@ class PostService {
         const userPosts = await PostModel.find({ _id: userId })
         return userPosts
     }
-    async updatePostComments(postId: any, commentId: any) {
+    async updatePostComments(postId: string, commentId: string) {
 
         const updatedPost = await PostModel.findByIdAndUpdate({ _id: postId }, { $push: { comments: commentId } })
         return updatedPost
     }
+    async updateLikes(postId: string, userId: string) {
+
+        const updatedPost = await PostModel.findByIdAndUpdate({ _id: postId }, { $addToSet: { likes: userId } }, { new: true })
+        return updatedPost
+    }
+    async removeLikes(postId: string, userId: string) {
+
+        const updatedPost = await PostModel.findByIdAndUpdate({ _id: postId }, { $pull: { likes: userId } }, { new: true })
+        return updatedPost
+    }
+
 }
 export default new PostService()

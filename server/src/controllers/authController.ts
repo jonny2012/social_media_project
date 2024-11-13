@@ -1,3 +1,4 @@
+import dotenv  from 'dotenv';
 import { Response, Request, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -5,7 +6,7 @@ import authService from "../DBservices/authService";
 import userService from "../DBservices/userService";
 import ApiError from "../errors/apiErrors";
 import fileService from "../services/fileService";
-
+dotenv.config({path:".env"})
 export interface User {
     username: string;
     email: string;
@@ -13,6 +14,8 @@ export interface User {
     fullName: string;
     profileImage: string
 }
+
+
 class AuthController {
     async registerAuthUser(req: Request, res: Response, next: NextFunction): Promise<any> {
         const { username, email, password, fullName }: User = req.body;
@@ -30,39 +33,42 @@ class AuthController {
             await authService.createUser(username, email, hashedPassword);
             await userService.createUser(username, fullName, profileImageName);
             return res.json({ message: "User succesfully created" });
-        } catch (error) {
+        } catch (error: any) {
             next(ApiError.internal("Internal server Error"))
-
+            res.status(500).json(error.message)
         }
     }
-
     async loginAuthUser(req: Request, res: Response, next: NextFunction): Promise<any> {
         const { email, password }: Partial<User> = req.body;
         try {
-            if (!email) {
+            if (!email || !password) {
                 res.json({ message: "Data not entered" });
                 return;
             }
-            const user = await authService.findOneUserByEmail(email);
-            if (!user) return res.json({ message: "Wrong email" });
+            const authUser = await authService.findOneUserByEmail(email);
+            if (!authUser) return res.status(400).json({ message: "Wrong email" });
+            const user= await userService.findUserByUsername(authUser.username)
+            if(!user){
+                return res.status(404).json({message:"Wrong data"})
+            }
 
-            if (!password) return res.json({ message: "Password not entered" });
-            const isValidPassword = bcrypt.compare(password, user.password);
+            const isValidPassword = bcrypt.compare(password, authUser.password);
 
             if (!isValidPassword)
                 return res.status(400).json({ message: "Wrong password" });
-            const token = jwt.sign({ userId: user._id, email }, "secret_key", {
+            const token = jwt.sign({ userId: user._id, email,username:user.username }, process.env.SECRET_KEY as string, {
                 expiresIn: "1h",
             });
-
             return res.status(200).json({
                 message: "Login successful",
                 token,
-                user: { id: user._id, email: user.email, username: user.username },
+                user: { id: user._id, email: authUser.email, username: user.username },
             });
-        } catch (err) {
+        } catch (error: any) {
             next(ApiError.internal("Internal server Error"))
+            res.status(500).json(error.message)
         }
+
     }
 }
 

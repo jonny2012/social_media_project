@@ -5,16 +5,22 @@ class UserService {
         const newUserProfile = await UserModel.create({ username, fullName, profileImage });
         return newUserProfile;
     }
-
+    async findUserByUsername(username:string){
+        const user = await UserModel.findOne({username})
+        return user
+    }
+    async findAllUsers() {
+        const users = await UserModel.find()
+        return users
+    }
     async findUserById(id: string) {
         const findedUser = UserModel.findById(id);
         return findedUser;
     }
     async findUserByIdAndPopulate(id: string) {
-        const findedUser = UserModel.findById(id).populate("posts", "follows", "following")
+        const findedUser = UserModel.findById(id).populate("posts")
         return findedUser;
     }
-
     async updateProfileImage(id: string, profile_image: string) {
         const updatedImage = await UserModel.findByIdAndUpdate(
             { _id: id },
@@ -29,21 +35,19 @@ class UserService {
         );
         return newPost;
     }
-
     async updateUserFolowers(userId: string, folowerId: string) {
         const newFolower = await UserModel.findByIdAndUpdate(
             { _id: userId },
-            { $push: { follows: folowerId } }
+            { $addToSet: { follows: folowerId } }
         );
         return newFolower;
     }
 
-    async updateUserFollowings(userId: string, folowingUserId: string) {
+    async updateUserFollowings(userId: any, folowingUserId: string) {
         const newFolowingUser = await UserModel.findByIdAndUpdate(
             { _id: userId },
-            { $push: { following: folowingUserId } }
+            { $addToSet: { following: folowingUserId } }
         );
-
         return newFolowingUser;
     }
 }

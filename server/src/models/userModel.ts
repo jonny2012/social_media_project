@@ -7,6 +7,6 @@ const userSchema = new mongoose.Schema({
     posts: [{ type: mongoose.Types.ObjectId, ref: "Post" }],
     follows: [{ type: mongoose.Types.ObjectId, ref: "User" }],
     following: [{ type: mongoose.Types.ObjectId, ref: "User" }],
-    about: { type: String }
+    bio: { type: String }
 })
 export const UserModel = mongoose.model("User", userSchema)
