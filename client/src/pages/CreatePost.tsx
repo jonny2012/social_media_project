@@ -35,7 +35,6 @@ const CreatePost = ({ open, setOpen }: any) => {
     formData.append("description", caption);
 
     try {
-      // Make the API request
       await createPost(formData);
       setOpen(!open);
     } catch (err) {
@@ -45,12 +44,6 @@ const CreatePost = ({ open, setOpen }: any) => {
 
   return (
     <div>
-      {/* Button to open the modal */}
-      <Button variant="contained" onClick={() => setOpen(!open)}>
-        Create New Post
-      </Button>
-
-      {/* Modal */}
       <Modal
         open={open}
         onClose={() => setOpen(!open)}
@@ -71,7 +64,6 @@ const CreatePost = ({ open, setOpen }: any) => {
             p: 2,
           }}
         >
-          {/* Header */}
           <Box
             sx={{
               display: "flex",
@@ -90,20 +82,17 @@ const CreatePost = ({ open, setOpen }: any) => {
               size="small"
               type="submit"
               onClick={handleSubmit}
-              // Disable "Share" button if no file is uploaded
             >
               Upload
             </Button>
           </Box>
 
-          {/* Content Area */}
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
             }}
           >
-            {/* Left Section: File Upload */}
             <Box
               sx={{
                 flex: 1,
@@ -133,7 +122,7 @@ const CreatePost = ({ open, setOpen }: any) => {
                   </Typography>
                 </>
               )}
-              {/* Hidden File Input */}
+
               <input
                 type="file"
                 style={{
@@ -147,7 +136,6 @@ const CreatePost = ({ open, setOpen }: any) => {
               />
             </Box>
 
-            {/* Right Section: Input and Avatar */}
             <Box
               sx={{
                 flex: 1,
@@ -156,9 +144,6 @@ const CreatePost = ({ open, setOpen }: any) => {
                 alignItems: "flex-start",
               }}
             >
-              {/* Avatar */}
-
-              {/* Caption Input */}
               <TextField
                 placeholder="Write  description..."
                 fullWidth

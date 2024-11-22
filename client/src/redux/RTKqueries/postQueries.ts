@@ -31,10 +31,17 @@ export const postApi = createApi({
       invalidatesTags: [{ type: "Post" }],
     }),
     updatePostLikes: build.mutation({
-      query: ({ postId, rest }) => ({
-        url: `/post/add-like/${postId}`,
+      query: (body) => ({
+        url: `/post/add-like/${body.postId}`,
         method: "PUT",
-        body: rest,
+        body,
+      }),
+      invalidatesTags: [{ type: "Post" }],
+    }),
+    updatePostUnlike: build.mutation({
+      query: (postId) => ({
+        url: `/post/remove-like/${postId}`,
+        method: "PUT",
       }),
       invalidatesTags: [{ type: "Post" }],
     }),
@@ -68,6 +75,7 @@ export const {
   useGetAllPostsQuery,
   useCreatePostMutation,
   useUpdatePostLikesMutation,
+  useUpdatePostUnlikeMutation,
   useCreatePostCommentsMutation,
   useGetAllPostCommentsQuery,
   useUserNotificationsQuery,

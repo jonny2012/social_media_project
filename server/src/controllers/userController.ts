@@ -66,16 +66,17 @@ class UserController {
     res: Response,
     next: NextFunction
   ): Promise<any> {
-    const userId = req.params.id;
-    const userProfileImage = req.body.profileImage;
+    const userId = req.user?.userId;
+    const profileImage = req.files;
     try {
-      if (userId || userProfileImage) {
-        res.status(404).json({ message: "UserID or folower Id not entered" });
+      if (!userId || !profileImage) {
+        res.status(404).json({ message: "UserID or image not entered" });
         next(ApiError.badRequest("Wrong  request data"));
+        return;
       }
       const userData = await userService.updateProfileImage(
         userId,
-        userProfileImage
+        profileImage
       );
 
       if (!userData) {

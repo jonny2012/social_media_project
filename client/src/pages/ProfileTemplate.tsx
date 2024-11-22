@@ -21,6 +21,12 @@ function ProfileTemplate() {
   } = useGetUserProfileQuery(id);
   const [follow, { data, error, isLoading }] = useUpdateUserFollowersMutation();
 
+  const userData = {
+    username: profile?.username,
+    profileImage: profile?.profileImage,
+    _id: profile?._id,
+  };
+
   const {
     data: followData,
     error: folo,
@@ -28,7 +34,6 @@ function ProfileTemplate() {
   } = useCheckFollowQuery(id);
 
   if (dataLoading) return <Box>...Loading</Box>;
-
   return (
     <>
       <SideMenu />
@@ -184,7 +189,7 @@ function ProfileTemplate() {
           >
             {profile &&
               profile.posts.map((post: any, i: number) => (
-                <ProfilePost key={post._id} post={post} />
+                <ProfilePost key={post._id} post={post} user={userData} />
               ))}
           </Box>
         </Box>

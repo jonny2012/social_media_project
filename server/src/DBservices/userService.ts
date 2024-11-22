@@ -1,3 +1,4 @@
+import { FileArray } from "express-fileupload";
 import { UserModel } from "./../models/userModel";
 
 class UserService {
@@ -25,7 +26,7 @@ class UserService {
     const findedUser = UserModel.findById(id).populate("posts");
     return findedUser;
   }
-  async updateProfileImage(id: string, profile_image: string) {
+  async updateProfileImage(id: string, profile_image: FileArray) {
     const updatedImage = await UserModel.findByIdAndUpdate(
       { _id: id },
       { $set: { profile_image } }

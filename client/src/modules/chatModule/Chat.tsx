@@ -59,7 +59,6 @@ const Chat = () => {
       if (data.isError) {
         refetch();
         allRoomsRefetch();
-        console.log("error");
       }
     });
   }, []);
@@ -71,7 +70,6 @@ const Chat = () => {
   useEffect(() => {
     if (room) {
       setMessages(room.messages);
-      console.log(room);
     }
   }, [room]);
   useEffect(() => {
@@ -93,9 +91,7 @@ const Chat = () => {
     // Listen for incoming messages
     socket.on("receive-message", (data: any) => {
       setMessages((prevMessages) => {
-        console.log(data);
         if (!prevMessages.some((msg) => msg.message === data.message)) {
-          console.log(prevMessages);
           return [...prevMessages, data];
         }
         return prevMessages;
@@ -111,7 +107,7 @@ const Chat = () => {
       const newMessage = { sender: user, message };
 
       setMessages((prev) => [...prev, newMessage]);
-      console.log(room._id);
+
       socket.emit(
         "send-message",
         { roomId: room._id, message, sender: user, receiver: receiver },

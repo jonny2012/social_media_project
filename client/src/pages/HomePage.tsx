@@ -7,8 +7,6 @@ import Footer from "../modules/footer/Footer";
 export const HomePage = () => {
   const { data: postData, error, isLoading, refetch } = useGetAllPostsQuery("");
 
-  console.log(postData);
-
   if (isLoading) return <Box>...Loading</Box>;
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -40,7 +38,7 @@ export const HomePage = () => {
                   likes={post._doc.likes}
                   isFollow={post.isFollow}
                   comments={post._doc.comments}
-                  commentsRefetch={refetch}
+                  postRefetch={refetch}
                 />
               </Box>
             ))}

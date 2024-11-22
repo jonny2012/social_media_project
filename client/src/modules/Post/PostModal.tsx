@@ -130,17 +130,17 @@ const PostModal = ({
         >
           <Box sx={{ display: "flex", gap: "20px" }}>
             <Avatar
-              src={`http://localhost:5000/avatar/${user.profileImage}`}
-              alt={user._id}
+              src={`http://localhost:5000/avatar/${user?.profileImage}`}
+              alt={user?._id}
             />
             <Typography sx={{ textAlign: "center" }}>
-              {user.username}
+              {user?.username}
             </Typography>
             <Link
               to={
-                user._id === userId
-                  ? `/profile/${user._id}`
-                  : `/user/${user._id}`
+                user?._id === userId
+                  ? `/profile/${user?._id}`
+                  : `/user/${user?._id}`
               }
             >
               {" "}
@@ -181,12 +181,6 @@ const PostModal = ({
                         >
                           {comment.comment}
                         </Typography>
-                        {/* <Typography
-            variant="caption"
-            sx={{ display: "block", color: "text.secondary" }}
-        >
-            {comment.time}  like
-        </Typography> */}
                       </Box>
                     </Box>
                     <Box ref={commentsEndRef}></Box>

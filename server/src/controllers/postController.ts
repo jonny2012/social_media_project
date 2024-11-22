@@ -20,7 +20,6 @@ class PostController {
     next: NextFunction
   ): Promise<any> {
     const { userId, description }: Partial<Post> = req.body;
-    console.log(req.body);
     const { image }: any = req.files;
     try {
       if (!userId) {
@@ -102,18 +101,28 @@ class PostController {
     res: Response,
     next: NextFunction
   ): Promise<any> {
-    const { userId }: Post = req.body;
+    const userId = req.body.userId;
     const postId = req.params.id;
     const currentUserId = req.user?.userId;
+
     try {
       if (!currentUserId) {
         res.status(404).json({ message: "current user not defined" });
         return;
       }
-      const updatedPost = await postService.updateLikes(postId, userId);
+
+      const post = await postService.findPostByPostId(postId);
+
+      if (!post) {
+        res.json({ message: "Post not found" });
+
+        return;
+      }
+
+      const updatedPost = await postService.updateLikes(postId, currentUserId);
       await notificationService.createLikeNotification(
-        userId,
         currentUserId,
+        userId,
         postId
       );
       res.json(updatedPost);
@@ -123,15 +132,19 @@ class PostController {
     }
   }
   async removePostLikes(
-    req: Request,
+    req: CustomRequest,
     res: Response,
     next: NextFunction
   ): Promise<any> {
-    const { userId }: Post = req.body;
+    const currentUserId = req.user?.userId;
     const postId = req.params.id;
-    try {
-      const updatedPost = await postService.removeLikes(postId, userId);
 
+    try {
+      if (!currentUserId) {
+        res.status(404).json({ message: "current user not defined" });
+        return;
+      }
+      const updatedPost = await postService.removeLikes(postId, currentUserId);
       res.json(updatedPost);
     } catch (error: any) {
       next(ApiError.internal(error.message));

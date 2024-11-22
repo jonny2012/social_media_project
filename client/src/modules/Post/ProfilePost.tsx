@@ -2,9 +2,9 @@ import { Box } from "@mui/material";
 import PostModal from "./PostModal";
 import { useState } from "react";
 
-const ProfilePost = ({ post }: any) => {
+const ProfilePost = ({ post, user }: any) => {
   const [open, setOpen] = useState<boolean>(false);
-  console.log(post);
+
   return (
     <>
       <Box
@@ -23,7 +23,7 @@ const ProfilePost = ({ post }: any) => {
       <PostModal
         open={open}
         handleClose={setOpen}
-        user={post.userId}
+        user={user}
         postId={post._id}
         imageUrl={post.image}
         likes={post.likes.length}

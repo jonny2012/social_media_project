@@ -8,7 +8,20 @@ import ProfilePost from "../modules/Post/ProfilePost";
 function ProfileHeader() {
   const userId = localStorage.getItem("userId");
   const { data: profile, error, isLoading } = useGetUserProfileQuery(userId);
+  const [file, setFile] = useState<any>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const userData = {
+    username: profile?.username,
+    profileImage: profile?.profileImage,
+    _id: profile?._id,
+  };
+  const handleFileChange = (e: any) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
+  };
 
   return (
     <>
@@ -47,7 +60,20 @@ function ProfileHeader() {
               backgroundOrigin: "border-box",
               backgroundClip: "content-box, border-box",
             }}
-          />
+          >
+            {" "}
+            <input
+              type="file"
+              style={{
+                opacity: 0,
+                position: "absolute",
+                cursor: "pointer",
+                width: "400px",
+                height: "400px",
+              }}
+              onChange={handleFileChange}
+            />
+          </Avatar>
           <Box>
             <Box sx={{ display: "flex", gap: "40px" }}>
               <Typography
@@ -157,7 +183,7 @@ function ProfileHeader() {
           >
             {profile &&
               profile.posts.map((post: any) => (
-                <ProfilePost key={post._id} post={post} />
+                <ProfilePost key={post._id} post={post} user={userData} />
               ))}
           </Box>
         </Box>

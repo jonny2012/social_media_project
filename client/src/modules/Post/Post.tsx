@@ -11,10 +11,14 @@ import {
   TextField,
 } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import ShareIcon from "@mui/icons-material/Share";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { useCreatePostCommentsMutation } from "../../redux/RTKqueries/postQueries";
+import {
+  useCreatePostCommentsMutation,
+  useUpdatePostLikesMutation,
+  useUpdatePostUnlikeMutation,
+} from "../../redux/RTKqueries/postQueries";
 import {
   useCheckFollowQuery,
   useUpdateUserFollowersMutation,
@@ -29,7 +33,7 @@ const Post = ({
   likes,
   comments,
   isFollow,
-  commentsRefetch,
+  postRefetch,
 }: any) => {
   const [comment, setComment] = useState("");
   const [open, setOpen] = useState(false);
@@ -41,19 +45,39 @@ const Post = ({
     { data: commentData, error: commentError, isLoading: commentIsLoading },
   ] = useCreatePostCommentsMutation();
   const [follow, { data, error, isLoading }] = useUpdateUserFollowersMutation();
+  const [
+    addLike,
+    { data: likeData, error: likeError, isLoading: LikeIsLoading },
+  ] = useUpdatePostLikesMutation();
+  const [
+    removeLike,
+    { data: unlikeData, error: unlikeError, isLoading: unLikeIsLoading },
+  ] = useUpdatePostUnlikeMutation();
+
   const handleCommentChange = (e: ChangeEvent<HTMLInputElement>) =>
     setComment(e.target.value);
   const {
     data: followData,
-    error: folo,
+    error: folowError,
     isLoading: followIsLoading,
   } = useCheckFollowQuery(user._id);
 
   const handleCommentSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     createComment({ userId, postId, comment });
-    commentsRefetch();
+    postRefetch();
     setComment("");
+  };
+
+  const handleLikeRefresh = () => {
+    if (likes.includes(userId)) {
+      removeLike(postId);
+      postRefetch();
+    } else {
+      addLike({ postId: postId, userId: user._id });
+      postRefetch();
+    }
+    return;
   };
 
   const variant = followData
@@ -114,10 +138,14 @@ const Post = ({
         </Box>
         <CardContent>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton>
-              <FavoriteBorderIcon />
+            <IconButton onClick={handleLikeRefresh}>
+              {likes.includes(userId) ? (
+                <FavoriteIcon sx={{ color: "red" }} />
+              ) : (
+                <FavoriteBorderIcon />
+              )}
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => setOpen(!open)}>
               <ChatBubbleOutlineIcon />
             </IconButton>
           </Box>

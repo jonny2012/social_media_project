@@ -107,7 +107,7 @@ class ChatController {
         next(ApiError.badRequest("Room not found"));
         return;
       }
-      console.log("found user --------------");
+
       res.json(room);
     } catch (err: any) {
       next(ApiError.internal(err.message));

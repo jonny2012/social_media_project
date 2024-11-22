@@ -1,6 +1,6 @@
 import { Box, TextField, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRegisterUserMutation } from "../redux/RTKqueries/authQueries";
 
@@ -9,11 +9,25 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>();
   const [register, { isLoading, error, isSuccess }] = useRegisterUserMutation();
   const navigate = useNavigate();
 
   const profilePicture = "/client/src/assets/image.png";
 
+  useEffect(() => {
+    if (error) {
+      if ("data" in error) {
+        // Handle FetchBaseQueryError
+        setErrorMessage((error as any).data?.message || "An error occurred");
+      } else {
+        // Handle SerializedError
+        setErrorMessage("A network error occurred");
+      }
+    } else {
+      setErrorMessage(null);
+    }
+  }, [error]);
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData();
@@ -79,6 +93,9 @@ const Register = () => {
         >
           Sign up
         </Button>
+        <Typography sx={{ color: "red" }}>
+          {error ? errorMessage : ""}
+        </Typography>
       </form>
       <Typography variant="body2" sx={{ mt: 4 }}>
         Already have an account?{" "}
