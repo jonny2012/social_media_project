@@ -1,11 +1,15 @@
-a{
-    text-decoration: none;
-    color: #000; 
-    width:100%
+a {
+  text-decoration: none;
+  color: #000;
+  width: 100%;
 }
 
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box  ;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+img {
+  image-rendering: optimizeQuality;
 }

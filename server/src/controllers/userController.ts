@@ -2,7 +2,6 @@ import userService from "../DBservices/userService";
 import ApiError from "../errors/apiErrors";
 import { Request, Response, NextFunction } from "express";
 import { UserModel } from "../models/userModel";
-import notificationController from "./notificationController";
 import notificationService from "../DBservices/notificationService";
 import { CustomRequest } from "../middlewares/authMiddleware";
 
@@ -49,7 +48,6 @@ class UserController {
     res: Response,
     next: NextFunction
   ): Promise<any> {
-    console.log(req.params.id);
     const userId = req.params.id;
     try {
       const userData = await userService.findUserByIdAndPopulate(userId);
@@ -99,51 +97,68 @@ class UserController {
     const userId = req.user?.userId;
     const folowerId = req.body.folowerId;
     try {
-      if (!userId ) {
-        res.status(404).json({ message: "UserID or folower Id not entered" });
-        next(ApiError.badRequest("Wrong  request data"));
-        return
+      if (!userId || !folowerId) {
+        res.status(404).json({ message: "User not found" });
+        next(ApiError.badRequest("UserId or follower id wrong"));
+        return;
       }
-      const userData = await userService.updateUserFolowers(userId, folowerId);
+      const user = await UserModel.findById(userId);
+      const targetUser = await UserModel.findById(folowerId);
 
-      if (!userData) {
-        res.status(404).json({ message: "Error on get userData" });
-        next(ApiError.badRequest("UserId is not correct"));
-
+      if (!user || !targetUser) {
+        res.status(404).json({ message: "User not found" });
+        next(ApiError.badRequest("User or follower  wrong"));
+        return;
       }
-      await notificationService.createFollowNotification(folowerId, userId)
-      return res.json(userData);
+
+      if (user.following.includes(folowerId)) {
+        user.following.pull(targetUser._id);
+        targetUser.follows.pull(user._id);
+        await user.save();
+        await targetUser.save();
+        res.status(200).json({ message: "Unfollow" });
+        return;
+      } else {
+        user.following.addToSet(targetUser._id);
+        targetUser.follows.addToSet(user._id);
+        await user.save();
+        await targetUser.save();
+
+        res.status(200).json({ message: "Follow" });
+      }
+      await notificationService.createFollowNotification(userId, folowerId);
     } catch (error: any) {
       next(ApiError.internal(error));
       res.status(500).json({ message: "Internal server Error" });
     }
   }
-
-  async updateUserFollowing(
-    req: Request,
+  async checkFollow(
+    req: CustomRequest,
     res: Response,
     next: NextFunction
   ): Promise<any> {
-    const userId = req.params.id;
-    const folowingUserId = req.body.following;
+    const currentUser = req.user?.userId;
+    const followedUser: any = req.params?.id;
     try {
-      if (userId || folowingUserId) {
-        res.status(400).json({ message: "UserID or folower Id not entered" });
-        next(ApiError.badRequest("Wrong  request data"));
+      if (!followedUser || !currentUser) {
+        res.status(404).json({ message: "Follower data undefined" });
+        next(ApiError.badRequest("Follower data undefined"));
+        return;
       }
-      const userData = await userService.updateUserFolowers(
-        userId,
-        folowingUserId
-      );
+      const user = await UserModel.findById(currentUser);
 
-      if (!userData) {
-        res.status(400).json({ message: "Error on get user data" });
-        next(ApiError.badRequest("UserId is not correct"));
+      if (user?.following.includes(followedUser)) {
+        res.json({ message: "Unfollow" });
+        return;
+      } else {
+        res.json({ message: "Follow" });
+        return;
       }
-      return res.json(userData);
     } catch (error: any) {
+      res.status(500).json({
+        message: error.message,
+      });
       next(ApiError.internal(error));
-      res.status(500).json({ message: "Internal server Error" });
     }
   }
   async searchUsers(
@@ -154,7 +169,7 @@ class UserController {
     try {
       const limit = 5;
       const search = req.query.name;
-     
+
       const users = await UserModel.find({
         fullName: { $regex: search, $options: "i" },
       })

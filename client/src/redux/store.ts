@@ -4,19 +4,22 @@ import { userApi } from "./RTKqueries/userQueries";
 import { postApi } from "./RTKqueries/postQueries";
 import authReducer from "./slices/authSlice"
 import { authApi } from "./RTKqueries/authQueries";
+import { chatApi } from "./RTKqueries/chatQueries";
 
 const rootReducer = combineReducers({
     userReducer,
-    authReducer,
+    auth: authReducer,
     [userApi.reducerPath]: userApi.reducer,
-    [postApi.reducerPath]:postApi.reducer,
-    [authApi.reducerPath]:authApi.reducer})
+    [postApi.reducerPath]: postApi.reducer,
+    [chatApi.reducerPath]: chatApi.reducer,
+    [authApi.reducerPath]: authApi.reducer
+})
 export const setupStore = () => {
 
     return configureStore({
         reducer: rootReducer,
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(userApi.middleware, postApi.middleware, authApi.middleware)
+            getDefaultMiddleware().concat(userApi.middleware, postApi.middleware, authApi.middleware, chatApi.middleware)
 
     })
 }

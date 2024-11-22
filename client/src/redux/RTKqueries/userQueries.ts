@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { RootState } from "@reduxjs/toolkit/query/react";
 
 
 export interface User {
@@ -11,44 +10,61 @@ export interface User {
 
 export const userApi = createApi({
     reducerPath: "userAPI",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api",   
+    baseQuery: fetchBaseQuery({
+        baseUrl: "http://localhost:5000/api",
         prepareHeaders: (headers, { getState }) => {
-            const token =  localStorage.getItem('token');
+            const token = localStorage.getItem('token');
             if (token) {
-              headers.set('authorization', `Bearer ${token}`);
+                headers.set('authorization', `Bearer ${token}`);
             }
             return headers;
-          },
-     }),
+        },
+    }),
+    tagTypes: ["User"],
     endpoints: (build) => ({
+        updateUserFollowers: build.mutation({
+            query: (followerId) => ({
+                url: '/user/follow',
+                method: 'PUT',
+                body: followerId
+            }),
+            invalidatesTags: ["User"]
+        }),
+        checkFollow: build.query({
+            query: (id) => ({
+                url: `/user/check-follow/${id}`,
+                method: "GET",
+            }),
+            providesTags: ["User"],
+        }),
+
         getUserProfile: build.query({
             query: (id) => ({
-            url:`/user/${id}`,
-            method:"GET",  
+                url: `/user/${id}`,
+                method: "GET",
 
-        })
-          }),
+            }),
+            providesTags: ["User"],
+        }),
+
+
         getAllUsersData: build.query({
             query: (body) => ({
-                url: '/user',  
+                url: '/user',
                 method: 'GET',
             }),
+            providesTags: ["User"],
         }),
 
-        updateUserFollowers: build.query({
-            query: (body) => ({
-                url: '/user',  
-                method: 'GET',
-            }),
-        }),
+
 
         searchUsersByName: build.query({
             query: (searchData) => ({
-                url: `/search/?name=${searchData}`,  
+                url: `/search/?name=${searchData}`,
                 method: 'GET',
             }),
         }),
     })
 })
 
- export const {useGetAllUsersDataQuery, useSearchUsersByNameQuery, useGetUserProfileQuery}=userApi
+export const { useGetAllUsersDataQuery, useSearchUsersByNameQuery, useGetUserProfileQuery, useCheckFollowQuery, useUpdateUserFollowersMutation } = userApi

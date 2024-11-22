@@ -1,33 +1,30 @@
-import { Box, Container, Typography,Grid2, ImageList, ImageListItem } from "@mui/material"
+import { Box, Container } from "@mui/material";
 import { useGetAllPostsQuery } from "../../redux/RTKqueries/postQueries";
+import SideMenu from "../sideMenu/SideMenu";
+import ProfilePost from "../Post/ProfilePost";
 
+export const ExplorePosts = ({ isOpenDrawer }: any) => {
+  const { data: postData, error, isLoading } = useGetAllPostsQuery("");
 
-export const  ExplorePosts = ({isOpenDrawer}:any)=>{
-    const { data:postData, error, isLoading } = useGetAllPostsQuery(undefined);
-    return (
-        <Container sx={{  padding: 2 } }>
-      
-        <Box sx={{width:"957px", display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"3px"}}>
-          
-          { postData && postData.map((post:any, index:number) => (
-        
-              <Box
-              key={index}
-                component="img"
-                src={`http://localhost:5000/posts/${post.image}`}    
-                alt={`image-${index}`}
-                sx={{
-                  width: '316px',
-                  height: '316px',
-                  objectFit:"fill",
-       
-                }}
-              />
-       
-          ))}
+  if (isLoading) return <Box>...Loading</Box>;
+  return (
+    <>
+      <SideMenu />
+      <Container sx={{ padding: 2 }}>
+        <Box
+          sx={{
+            width: "957px",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: "3px",
+          }}
+        >
+          {postData &&
+            postData.map((post: any, index: number) => (
+              <ProfilePost key={post._doc._id} post={post._doc} />
+            ))}
         </Box>
       </Container>
-  
-      
-    )
-}
+    </>
+  );
+};
