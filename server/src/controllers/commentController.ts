@@ -27,7 +27,6 @@ class CommentController {
           .status(404)
           .json({ message: "User with this userId not found" });
       }
-
       const newComment = await commentService.createComment(
         userId,
         postId,

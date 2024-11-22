@@ -11,6 +11,16 @@ export interface User {
   fullName: string;
   profileImage: string;
 }
+// const baseQuery = fetchBaseQuery({
+//   baseUrl: "https://your-api-url.com",
+//   prepareHeaders: (headers, { getState }) => {
+//     const token = getState().auth.token;
+//     if (token) {
+//       headers.set("Authorization", `Bearer ${token}`);
+//     }
+//     return headers;
+//   },
+// });
 
 export const authApi = createApi({
   reducerPath: "authAPI",

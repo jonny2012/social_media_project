@@ -37,7 +37,7 @@ const Post = ({
 }: any) => {
   const [comment, setComment] = useState("");
   const [open, setOpen] = useState(false);
-  const userId = localStorage.getItem("userId");
+  const userId = sessionStorage.getItem("userId");
   const sendData = { userId, comment };
 
   const [

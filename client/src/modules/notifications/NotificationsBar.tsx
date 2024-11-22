@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
 
 const NotificationsBar = ({ openNotifications, setOpenNotifications }: any) => {
-  const userId = localStorage.getItem("userId");
+  const userId = sessionStorage.getItem("userId");
   const {
     data: notifications,
     error,

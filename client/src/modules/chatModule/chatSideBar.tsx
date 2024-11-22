@@ -12,7 +12,7 @@ import { useGetAllRoomsQuery } from "../../redux/RTKqueries/chatQueries";
 import SideMenu from "../sideMenu/SideMenu";
 
 const ChatSideBar = ({ open, setOpen, socket }: any) => {
-  const user = localStorage.getItem("userId");
+  const user = sessionStorage.getItem("userId");
 
   const {
     data: rooms,

@@ -28,7 +28,7 @@ export interface Room {
 
 const Chat = () => {
   const { id: receiver } = useParams();
-  const user = localStorage.getItem("userId");
+  const user = sessionStorage.getItem("userId");
   const messagesEndRef = useRef<any>(null);
 
   const {

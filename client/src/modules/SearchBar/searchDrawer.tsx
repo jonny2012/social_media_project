@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Typography,
   ListItemAvatar,
@@ -15,13 +15,15 @@ import { Link } from "react-router-dom";
 
 export default function TemporaryDrawer({ toggleDrawer, open }: any) {
   const [inputData, setInputData] = useState("");
-
   const {
     data: userData,
     error,
     isLoading,
   } = useSearchUsersByNameQuery(inputData);
 
+  useEffect(() => {
+    console.log(error);
+  }, []);
   const handleChange = (e: any) => {
     if (e.target.value !== null) {
       setInputData(e.target.value);

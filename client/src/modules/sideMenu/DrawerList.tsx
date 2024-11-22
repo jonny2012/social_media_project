@@ -24,7 +24,7 @@ export const DrawerList = ({
   openCreatePost,
   setOpenCreatePost,
 }: any) => {
-  const id = localStorage.getItem("userId");
+  const id = sessionStorage.getItem("userId");
 
   return (
     <>

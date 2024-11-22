@@ -14,7 +14,7 @@ export default function SideMenu() {
   const dispatch = useDispatch();
   const [openNotifications, setOpenNotifications] = useState(false);
   const [openCreatePost, setOpenCreatePost] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const toggleDrawer = (newtoggle: boolean) => {
     setOpen(newtoggle);
@@ -40,9 +40,10 @@ export default function SideMenu() {
 
       <Button
         onClick={() => {
-          localStorage.removeItem("token");
+          sessionStorage.removeItem("token");
+
           dispatch(clearToken());
-          navigate("/login");
+          navigate("/login", { replace: true });
         }}
       >
         Logout

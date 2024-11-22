@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, redirect, replace } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useGetLoginUserMutation } from "./../redux/RTKqueries/authQueries"; // Import the login mutation hook
 import { setToken } from "../redux/slices/authSlice"; // Import the action to set token in Redux
@@ -52,7 +52,8 @@ const Login = () => {
 
         if (token && user) {
           dispatch(setToken({ token: result.token, user: result.user }));
-          localStorage.setItem("userId", result.user.id as string);
+          sessionStorage.setItem("token", result.token);
+          sessionStorage.setItem("userId", result.user.id as string);
           navigate("/", { replace: true });
         }
       }
@@ -118,9 +119,7 @@ const Login = () => {
           </Typography>
         )}
       </form>
-      <Typography variant="body2" sx={{ display: "block", mt: 2 }}>
-        Forgot password?
-      </Typography>
+
       <Typography variant="body2" sx={{ mt: 4 }}>
         Don’t have an account?{" "}
         <Link style={{ color: "blue" }} to={"/register"}>

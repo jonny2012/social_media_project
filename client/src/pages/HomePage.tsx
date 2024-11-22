@@ -7,6 +7,8 @@ import Footer from "../modules/footer/Footer";
 export const HomePage = () => {
   const { data: postData, error, isLoading, refetch } = useGetAllPostsQuery("");
 
+  const userId = localStorage.getItem("userId");
+
   if (isLoading) return <Box>...Loading</Box>;
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

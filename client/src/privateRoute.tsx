@@ -1,23 +1,11 @@
-import React, { ReactNode } from 'react';
-import { useSelector } from 'react-redux';
-import { Navigate, Outlet } from 'react-router-dom';
-import { RootState } from './redux/store';
-
-
+import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoute: React.FC = () => {
-  const token = useSelector((state: RootState) => {
-
-    return state.auth.token
-  });
-  const user = useSelector((state: RootState) => state.auth.user);
+  const token = sessionStorage.getItem("token");
 
   if (!token) {
     return <Navigate to={"/login"} replace />;
-
-  } else
-
-    return <Outlet></Outlet>;
+  } else return <Outlet></Outlet>;
 };
 
 export default PrivateRoute;

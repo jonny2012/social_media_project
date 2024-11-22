@@ -6,7 +6,7 @@ import PostModal from "../modules/Post/PostModal";
 import ProfilePost from "../modules/Post/ProfilePost";
 
 function ProfileHeader() {
-  const userId = localStorage.getItem("userId");
+  const userId = sessionStorage.getItem("userId");
   const { data: profile, error, isLoading } = useGetUserProfileQuery(userId);
   const [file, setFile] = useState<any>(null);
   const [open, setOpen] = useState<boolean>(false);
@@ -93,6 +93,7 @@ function ProfileHeader() {
               >
                 <Button
                   variant="outlined"
+                  disabled
                   sx={{
                     textTransform: "none",
                     backgroundColor: "#EFEFEF",

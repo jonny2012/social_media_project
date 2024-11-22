@@ -9,11 +9,18 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useCreatePostMutation } from "../redux/RTKqueries/postQueries";
+import { useGetUserProfileQuery } from "../redux/RTKqueries/userQueries";
 
 const CreatePost = ({ open, setOpen }: any) => {
-  const userId = localStorage.getItem("userId");
+  const userId = sessionStorage.getItem("userId");
   const [file, setFile] = useState<any>(null);
   const [caption, setCaption] = useState("");
+  const {
+    data: profile,
+    error: profileError,
+    isLoading: profileIsLoading,
+    refetch,
+  } = useGetUserProfileQuery(userId);
   const [createPost, { data, error, isLoading }] = useCreatePostMutation();
 
   const handleFileChange = (e: any) => {
@@ -37,6 +44,7 @@ const CreatePost = ({ open, setOpen }: any) => {
     try {
       await createPost(formData);
       setOpen(!open);
+      refetch();
     } catch (err) {
       console.error("Error creating post:", err);
     }

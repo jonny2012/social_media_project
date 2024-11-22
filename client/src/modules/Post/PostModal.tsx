@@ -26,7 +26,7 @@ const PostModal = ({
   likes,
   user,
 }: any) => {
-  const userId = localStorage.getItem("userId");
+  const userId = sessionStorage.getItem("userId");
 
   const commentsEndRef = useRef<any>(null);
   const [newComment, setNewComment] = useState<any>();
@@ -115,6 +115,7 @@ const PostModal = ({
               maxWidth: "100%",
               height: "100%",
               borderRadius: 2,
+              objectFit: "fill",
             }}
           />
         </Box>
@@ -157,7 +158,7 @@ const PostModal = ({
               flex: 1,
               overflowY: "auto",
               mt: 2,
-              width: "60%",
+              width: "100%",
               scrollBarWidth: "3px",
               height: "400px",
             }}
@@ -190,8 +191,7 @@ const PostModal = ({
           </Box>
           <Divider sx={{ mt: 2 }} />
           <Box sx={{ display: "flex", gap: "10px" }}>
-            {" "}
-            <Box
+            {/* <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -200,7 +200,7 @@ const PostModal = ({
             >
               <FavoriteBorderIcon />
               <Typography variant="body2">{`${likes}`}</Typography>
-            </Box>
+            </Box> */}
             <Box
               sx={{
                 display: "flex",
@@ -221,12 +221,12 @@ const PostModal = ({
               flexDirection: "row",
               gap: "20px",
               alignItems: "center",
-              width: "30vw",
+              width: "20vw",
               mt: 2,
             }}
           >
             <form
-              style={{ display: "flex", gap: "20px", width: "70%" }}
+              style={{ display: "flex", gap: "20px", width: "100%" }}
               onSubmit={handleCommentSubmit}
             >
               <TextField
