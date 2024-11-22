@@ -13,6 +13,7 @@ import ChatSideBar from "./modules/chatModule/chatSideBar";
 import { useSelector } from "react-redux";
 import PostModal from "./modules/Post/PostModal";
 import Footer from "./modules/footer/Footer";
+import ErrorPage from "./pages/ErrorPage";
 
 export const AppRouter = () => {
   const token = useSelector((state: any) => state.auth?.token);
@@ -23,7 +24,7 @@ export const AppRouter = () => {
         <Routes>
           <Route path={"/login"} element={<Login />} />
           <Route path={"/register"} element={<Register />} />
-          <Route path={"*"} element={<Navigate to={"/login"} replace />} />
+          <Route path={"*"} element={<ErrorPage />} />
           {token ? (
             <Route element={<PrivateRoute />}>
               <Route path={"/"} element={<HomePage />} />
@@ -35,7 +36,7 @@ export const AppRouter = () => {
               <Route path={"/chat-room/:id"} element={<Chat />} />
               <Route path={"/notifications"} element={<NotificationsBar />} />
               <Route path={"/comments"} element={<PostModal />} />
-              <Route path={"*"} element={<Navigate to={"/login"} replace />} />
+              <Route path={"*"} element={<ErrorPage />} />
             </Route>
           ) : (
             <Route element={<Navigate to={"/login"} />}></Route>
